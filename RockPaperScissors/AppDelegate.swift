@@ -12,10 +12,30 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        var categories = NSMutableSet()
+        
+        var playRock = UIMutableUserNotificationAction()
+        playRock.title = "Play Rock"
+        playRock.identifier = "rock"
+        playRock.activationMode = UIUserNotificationActivationMode.Foreground
+        playRock.authenticationRequired = false
+        
+        //playPaper
+        //playScissors
+        
+        var gameCategory  = UIMutableUserNotificationCategory()
+        gameCategory.identifier = "gameCategory"
+        gameCategory.setActions([playRock], forContext: UIUserNotificationActionContext.Default)
+        
+        categories.addObject(gameCategory)
+        
+        var settings = UIUserNotificationSettings(forTypes: (.Alert | .Badge | .Sound), categories: categories as Set<NSObject>)
+        UIApplication.sharedApplication().registerUserNotificationSettings(settings)
+        
         return true
     }
 
@@ -40,7 +60,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 

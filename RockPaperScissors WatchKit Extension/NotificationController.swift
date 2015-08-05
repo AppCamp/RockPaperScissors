@@ -12,6 +12,10 @@ import Foundation
 
 class NotificationController: WKUserNotificationInterfaceController {
 
+    @IBOutlet weak var alertLabel: WKInterfaceLabel!
+    
+    @IBOutlet weak var highScoreLabel: WKInterfaceLabel!
+    
     override init() {
         // Initialize variables here.
         super.init()
@@ -29,25 +33,53 @@ class NotificationController: WKUserNotificationInterfaceController {
         super.didDeactivate()
     }
 
-    /*
-    override func didReceiveLocalNotification(localNotification: UILocalNotification, withCompletion completionHandler: ((WKUserNotificationInterfaceType) -> Void)) {
-        // This method is called when a local notification needs to be presented.
-        // Implement it if you use a dynamic notification interface.
-        // Populate your dynamic notification interface as quickly as possible.
-        //
-        // After populating your dynamic notification interface call the completion block.
-        completionHandler(.Custom)
-    }
-    */
     
-    /*
-    override func didReceiveRemoteNotification(remoteNotification: [NSObject : AnyObject], withCompletion completionHandler: ((WKUserNotificationInterfaceType) -> Void)) {
-        // This method is called when a remote notification needs to be presented.
-        // Implement it if you use a dynamic notification interface.
-        // Populate your dynamic notification interface as quickly as possible.
-        //
-        // After populating your dynamic notification interface call the completion block.
+    override func didReceiveLocalNotification(localNotification: UILocalNotification, withCompletion completionHandler: ((WKUserNotificationInterfaceType) -> Void)) {
+        
+        alertLabel.setText(localNotification.alertBody)
+        if let userInfo = localNotification.userInfo as? [String:Int]{
+            if let highscore = userInfo["highscore"] {
+                highScoreLabel.setText("Last HighScore: \(highscore)")
+            }
+        }
+        
         completionHandler(.Custom)
     }
-    */
+
+    
+    
+    override func didReceiveRemoteNotification(remoteNotification: [NSObject : AnyObject], withCompletion completionHandler: ((WKUserNotificationInterfaceType) -> Void)) {
+        
+        if let highscore = remoteNotification["highscore"] as? String {
+            if !highscore.isEmpty {
+                highScoreLabel.setText("Last HighScore: \(highscore)")
+            }
+        }
+        
+        if let remoteAps: NSDictionary = remoteNotification["aps"] as? NSDictionary {
+            if let remoteAlert: NSDictionary = remoteAps["alert"] as? NSDictionary {
+                if let remoteBody = remoteAlert["body"] as? String {
+                    alertLabel.setText(remoteBody)
+                }
+            }
+        }
+        
+        completionHandler(.Custom)
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
